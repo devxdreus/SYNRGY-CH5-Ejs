@@ -1,4 +1,18 @@
 import Book from '../models/BookModel.js';
+import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
+import fs from 'fs/promises';
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const uploadDirectory = path.join(__dirname, '../public/uploads');
+
+const ensureUploadDirectoryExists = async () => {
+  try {
+    await fs.access(uploadDirectory);
+  } catch (error) {
+    await fs.mkdir(uploadDirectory, { recursive: true });
+  }
+};
 
 export const getAllBooks = async (req, res) => {
   try {
