@@ -1,4 +1,5 @@
 import express from 'express';
+import multer from 'multer'; // Import multer
 import {
   getAllBooks,
   getBookById,
@@ -9,10 +10,13 @@ import {
 
 const router = express.Router();
 
-router.get('/users', getAllBooks);
-router.get('/users/:id', getBookById);
-router.post('/users/', createBook);
-router.put('/users/:id', updateBook);
-router.delete('/users/:id', deleteBook);
+const storage = multer.memoryStorage(); // Menyimpan file gambar ke dalam buffer memory
+const upload = multer({ storage: storage });
+
+router.get('/books', getAllBooks);
+router.get('/books/:id', getBookById);
+router.post('/books', upload.single('image'), createBook);
+router.put('/books/:id', upload.single('image'), updateBook);
+router.delete('/books/:id', deleteBook);
 
 export default router;
