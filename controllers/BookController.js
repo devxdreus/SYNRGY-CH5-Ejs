@@ -3,9 +3,6 @@ import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import fs from 'fs/promises';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-const uploadDirectory = path.join(__dirname, '../public/uploads');
-
 const ensureUploadDirectoryExists = async () => {
   try {
     await fs.access(uploadDirectory);
@@ -39,11 +36,23 @@ export const getBookById = async (req, res) => {
 
 export const createBook = async (req, res) => {
   const { name, author, price } = req.body;
+  const image = req.file;
+  if (!image) {
+    return res.status(400).json({ message: 'Gambar buku harus disertakan' });
+  }
+  const imageName = uuidv4() + path.extname(image.originalname);
   try {
-    const newBook = await Book.create({ name, author, price });
-    res.status(201).json(newBook);
+    await image.mv(path.join(uploadDirectory, imageName));
+    upload;
+    const newBook = await BooksModel.create({
+      name,
+      author,
+      price,
+      image: imageName,
+    });
+    return res.status(201).json(newBook);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 };
 
