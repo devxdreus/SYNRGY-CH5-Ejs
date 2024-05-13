@@ -70,7 +70,7 @@ export const createBook = async (req, res) => {
 export const updateBook = async (req, res) => {
   const { id } = req.params;
   const { name, author, price } = req.body;
-  const { image } = req.file;
+  const image = req.file;
 
   try {
     const book = await Book.findByPk(id);
