@@ -1,0 +1,124 @@
+<!-- index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>All Books</title>
+        <!-- Tambahkan link CSS Bootstrap -->
+        <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+
+        <style>
+            /* Ganti '200px' dan 'auto' dengan dimensi yang sesuai */
+            .card-img-top {
+                width: 250px;
+                height: 300px;
+                height: auto;
+                object-fit: contain;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="mt-5">All Books</h1>
+
+            <a href="/books/new" class="btn btn-success mt-3">Add New Book</a>
+
+            <div class="row mt-3">
+                <% books.forEach(book => { %>
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <img
+                            src="/uploads/<%= book.image %>"
+                            class="card-img-top"
+                            alt="<%= book.name %>"
+                        />
+                        <div class="card-body">
+                            <h5 class="card-title"><%= book.name %></h5>
+                            <p class="card-text">Author: <%= book.author %></p>
+                            <p class="card-text">Price: $<%= book.price %></p>
+                            <!-- Tombol untuk mengedit buku -->
+                            <a
+                                href="/books/<%= book.id %>/edit"
+                                class="btn btn-primary"
+                                >Edit</a
+                            >
+                            <!-- Tombol untuk menghapus buku dengan konfirmasi menggunakan sweetAlert2 -->
+                            <button
+                                class="btn btn-danger delete-book-btn"
+                                data-id="<%= book.id %>"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+
+        <!-- Tambahkan script JavaScript Bootstrap (opsional) -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            // Tambahkan event listener untuk tombol delete
+            document.addEventListener('DOMContentLoaded', function () {
+                const deleteButtons =
+                    document.querySelectorAll('.delete-book-btn');
+                deleteButtons.forEach((button) => {
+                    button.addEventListener('click', function () {
+                        const bookId = this.dataset.id;
+                        // Tampilkan sweetAlert2 untuk konfirmasi
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: 'You will not be able to recover this book!',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, delete it!',
+                            cancelButtonText: 'Cancel',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Jika pengguna mengonfirmasi, kirimkan permintaan DELETE ke server
+                                fetch(`/books/${bookId}`, {
+                                    method: 'DELETE',
+                                })
+                                    .then((response) => {
+                                        if (response.ok) {
+                                            Swal.fire(
+                                                'Success',
+                                                'Book deleted successfully',
+                                                'success'
+                                            );
+                                            setTimeout(() => {
+                                                window.location.href = '/books';
+                                            }, 2000); // 2 detik delay sebelum redirect
+                                        } else {
+                                            throw new Error(
+                                                'Failed to delete book'
+                                            );
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        console.error(error);
+                                        Swal.fire(
+                                            'Error',
+                                            'Failed to delete book',
+                                            'error'
+                                        );
+                                    });
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

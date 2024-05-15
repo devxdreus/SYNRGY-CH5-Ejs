@@ -1,11 +1,12 @@
 import express from 'express';
 import multer from 'multer'; // Import multer
 import {
-  getAllBooks,
-  getBookById,
-  createBook,
-  updateBook,
-  deleteBook,
+    getAllBooks,
+    showCreateForm,
+    createBook,
+    showEditForm,
+    updateBook,
+    deleteBook,
 } from '../controllers/BookController.js';
 
 const router = express.Router();
@@ -14,8 +15,9 @@ const storage = multer.memoryStorage(); // Menyimpan file gambar ke dalam buffer
 const upload = multer({ storage: storage });
 
 router.get('/books', getAllBooks);
-router.get('/books/:id', getBookById);
+router.get('/books/new', showCreateForm);
 router.post('/books', upload.single('image'), createBook);
+router.get('/books/:id/edit', showEditForm);
 router.put('/books/:id', upload.single('image'), updateBook);
 router.delete('/books/:id', deleteBook);
 

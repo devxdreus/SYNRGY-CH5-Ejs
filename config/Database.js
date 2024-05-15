@@ -1,8 +1,8 @@
 import { Sequelize } from 'sequelize';
 
-const db = new Sequelize('synrgy-crud', 'root', 'root', {
-  host: 'localhost',
-  dialect: 'mysql',
+const sequelize = new Sequelize('synrgy-crud', 'root', 'root', {
+    host: 'localhost',
+    dialect: 'mysql',
 });
 
-export default db;
+export { sequelize };
